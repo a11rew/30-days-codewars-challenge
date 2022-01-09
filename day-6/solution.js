@@ -1,6 +1,6 @@
 function SnakesLadders() {
   let snakes = new Map([
-    [16, -6],
+    [16, -10],
     [49, -38],
     [46, -21],
     [64, -4],
@@ -27,35 +27,26 @@ function SnakesLadders() {
   let board = new Map();
   for (let a = 1; a < 101; a++) board.set(a, 0);
   this.board = new Map([...board, ...snakes, ...ladders]);
-
-  console.log(this.board);
-
-  this.p1 = 1;
-  this.p2 = 1;
+  this.p1 = 0;
+  this.p2 = 0;
   this.playing = 0;
   this.changePlayer = () => (this.playing = (this.playing + 1) % 2);
+  this.ended = false;
 }
 
 SnakesLadders.prototype.play = function (die1, die2) {
-  let dieValue = die1 === die2 ? die1 : die1 + die2;
-  if (this.playing === 0) {
-    this.p1 = this.p1 + dieValue;
-    let action = this.board.get(this.p1);
-    this.p1 = this.p1 + action;
-    if (this.board.get(this.p1) !== 0) this.play(0, 0);
-    if (!(die1 == die2)) this.changePlayer();
-    return `Player 1 is on square ${this.p1}`;
-  } else {
-    this.p2 = this.p2 + dieValue;
-    let action = this.board.get(this.p2);
-    this.p2 = this.p2 + action;
-    if (this.board.get(this.p2) !== 0) this.play(0, 0);
-    if (!(die1 == die2)) this.changePlayer();
-    return `Player 2 is on square ${this.p2}`;
+  if (this.ended) return `Game over!`;
+  let dieValue = die1 + die2;
+  let player = this.playing == 0 ? "p1" : "p2";
+  this[player] = this[player] + dieValue;
+  if (this[player] > 100) this[player] = 100 - (this[player] % 100);
+  let action = this.board.get(this[player]);
+  this[player] = this[player] + action;
+  if (this.board.get(this[player]) !== 0) this.play(0, 0);
+  if (die1 !== die2) this.changePlayer();
+  if (this[player] === 100) {
+    this.ended = true;
+    return `Player ${player[1]} Wins!`;
   }
+  return `Player ${player[1]} is on square ${this[player]}`;
 };
-
-let game = new SnakesLadders();
-console.log(game.play(1, 1));
-console.log(game.play(1, 5));
-console.log(game.play(6, 2));
