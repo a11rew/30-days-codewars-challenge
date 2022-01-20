@@ -19,3 +19,5 @@ For example:
 ```
 
 For your convenience, there is already a function 'isArray(o)' declared and defined that returns true if its argument is an array, false otherwise.
+
+https://www.codewars.com/kata/520446778469526ec0000001
